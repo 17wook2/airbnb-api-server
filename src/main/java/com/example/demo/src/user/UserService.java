@@ -31,40 +31,27 @@ public class UserService {
 
     }
 
-    //POST
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
-        //중복
-        if(userProvider.checkEmail(postUserReq.getEmail()) ==1){
+        if (userProvider.checkEmail(postUserReq.getUserEmail()) == 1){
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }
-
         String pwd;
         try{
-            //암호화
-            pwd = new SHA256().encrypt(postUserReq.getPassword());
-            postUserReq.setPassword(pwd);
-
-        } catch (Exception ignored) {
+            String encryptedPassword = new SHA256().encrypt(postUserReq.getUserPassword());
+            postUserReq.setUserPassword(encryptedPassword);
+        }catch (Exception exception){
             throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
         }
         try{
-            int userIdx = userDao.createUser(postUserReq);
-            //jwt 발급.
-            String jwt = jwtService.createJwt(userIdx);
-            return new PostUserRes(jwt,userIdx);
-        } catch (Exception exception) {
+            int userId = userDao.createUser(postUserReq);
+            String jwt = jwtService.createJwt(userId);
+            return new PostUserRes(jwt,userId);
+
+        }catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public void modifyUserName(PatchUserReq patchUserReq) throws BaseException {
-        try{
-            int result = userDao.modifyUserName(patchUserReq);
-            if(result == 0){
-                throw new BaseException(MODIFY_FAIL_USERNAME);
-            }
-        } catch(Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
+
+
 }
