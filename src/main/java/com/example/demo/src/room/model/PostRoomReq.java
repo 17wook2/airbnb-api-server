@@ -40,10 +40,10 @@ public class PostRoomReq {
     private LocalDateTime roomcCheckOutTime;
     @Nullable
     private String roomRefundPolicy;
-    @Nullable
-    private LocalDateTime createdAt;
-    @Nullable
-    private LocalDateTime updatedAt;
+//    @Nullable
+//    private LocalDateTime createdAt;
+//    @Nullable
+//    private LocalDateTime updatedAt;
     @Nullable
     private double latitude;
     @Nullable

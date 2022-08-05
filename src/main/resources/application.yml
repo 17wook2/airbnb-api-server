@@ -9,6 +9,7 @@ jasypt:
   encryptor:
     bean: jasyptStringEncryptor
 
+
 spring:
   application:
     name: demo
@@ -19,5 +20,6 @@ spring:
     username:  admin
     password: ENC(JitoXwRvMaJMYiZYHuHaXnmFQAuOqvGx)
     driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
-
-
+logging:
+  config:
+  classpath: log4j2.xml

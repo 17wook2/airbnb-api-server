@@ -1,8 +1,7 @@
 package com.example.demo.src.room;
 
-import com.example.demo.src.room.model.GetRoomRes;
-import com.example.demo.src.room.model.PostRoomReq;
-import com.example.demo.src.room.model.PostRoomRes;
+import com.example.demo.src.room.model.*;
+import com.sun.rowset.internal.Row;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +30,7 @@ public class roomDao {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("room").usingGeneratedKeyColumns("roomId");
     }
     private final RowMapper<GetRoomRes> getRoomRowMapper = BeanPropertyRowMapper.newInstance(GetRoomRes.class);
+    private final RowMapper<GetRoomReservationRes> getRoomReservationResRowMapper = BeanPropertyRowMapper.newInstance(GetRoomReservationRes.class);
     public List<GetRoomRes> getRooms() {
         String getRoomsQuery = "select * from room";
         return this.jdbcTemplate.query(getRoomsQuery, getRoomRowMapper);
@@ -48,8 +48,15 @@ public class roomDao {
     }
 
     public PostRoomRes createRoom(PostRoomReq postRoomReq) {
-        SqlParameterSource query = new BeanPropertySqlParameterSource(postRoomReq);
-        long roomId = jdbcInsert.executeAndReturnKey(query).longValue();
+        SqlParameterSource params = new BeanPropertySqlParameterSource(postRoomReq);
+        long roomId = jdbcInsert.executeAndReturnKey(params).longValue();
         return new PostRoomRes(roomId);
     }
+
+    public List<GetRoomReservationRes> getRoomReservation(int roomId) {
+        String getRoomReservationQuery = "select * from reservation where roomId = ?";
+        return this.jdbcTemplate.query(getRoomReservationQuery,getRoomReservationResRowMapper,roomId);
+    }
+
+
 }

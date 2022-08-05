@@ -1,25 +1,47 @@
 package com.example.demo.src.user;
 
 
+import com.example.demo.src.room.model.GetRoomRes;
+import com.example.demo.src.room.model.PostRoomRes;
 import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UserDao {
 
+    private NamedParameterJdbcTemplate jdbc;
     private JdbcTemplate jdbcTemplate;
+    private SimpleJdbcInsert wishlistJdbcInsert;
+    private SimpleJdbcInsert profileJdbcInsert;
 
+    private final RowMapper<GetWishlistRes> getWishlistResRowMapper = BeanPropertyRowMapper.newInstance(GetWishlistRes.class);
     @Autowired
     public void setDataSource(DataSource dataSource) {
+        this.jdbc = new NamedParameterJdbcTemplate(dataSource);
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.wishlistJdbcInsert = new SimpleJdbcInsert(dataSource)
+                .withTableName("wishlists")
+                .usingGeneratedKeyColumns("wishlistId");
+        this.profileJdbcInsert = new SimpleJdbcInsert(dataSource)
+                .withTableName("user_profile")
+                .usingGeneratedKeyColumns("userProfileId");
     }
 
     public List<GetUserRes> getUsers() {
@@ -51,5 +73,32 @@ public class UserDao {
     }
 
 
+    public List<GetWishlistRes> getWishlists(int userId) {
+        String getWishlistsQuery = "select * from wishlists where userId = ?";
+        return jdbcTemplate.query(getWishlistsQuery,getWishlistResRowMapper,userId);
+    }
 
+    public int createWishlist(PostWishlistReq postWishlistReq) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(postWishlistReq);
+        return wishlistJdbcInsert.executeAndReturnKey(params).intValue();
+    }
+
+    public int modifyWishlist(PatchWishlistReq patchWishlistReq) {
+        String modifyWishlistQuery = "update wishlists set wishlistName = :wishlistName where wishlistId = :wishlistId";
+        SqlParameterSource params = new BeanPropertySqlParameterSource(patchWishlistReq);
+        return jdbc.update(modifyWishlistQuery,params);
+//        -- 2 Map으로 parameter 매핑
+//        Map<String, Object> params2 = new HashMap<>();
+//        params2.put("wishlistName",patchWishlistReq);
+
+//        new MapSqlParameterSource()
+//                .addValue("wishlistName",patchWishlistReq.getWishlistName())
+
+    }
+
+    public int postUserProfile(PostUserProfileReq postUserProfileReq) {
+        //bean에 등록된 객체를 map객체로 만들어준다.
+        SqlParameterSource params = new BeanPropertySqlParameterSource(postUserProfileReq);
+        return profileJdbcInsert.executeAndReturnKey(params).intValue();
+    }
 }

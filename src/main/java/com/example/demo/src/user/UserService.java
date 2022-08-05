@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.example.demo.config.BaseResponseStatus.*;
 
 // Service Create, Update, Delete 의 로직 처리
@@ -53,5 +55,30 @@ public class UserService {
     }
 
 
+    public int createWishlist(PostWishlistReq postWishlistReq) throws BaseException{
+        try{
+            return userDao.createWishlist(postWishlistReq);
+        }catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
+    public int modifyWishlist(PatchWishlistReq patchWishlistReq) throws BaseException{
+        try{
+            return userDao.modifyWishlist(patchWishlistReq);
+        }catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
+
+    public int postUserProfile(PostUserProfileReq postUserProfileReq) throws BaseException{
+        try{
+            return userDao.postUserProfile(postUserProfileReq);
+        }catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
 }
+
