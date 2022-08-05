@@ -59,4 +59,14 @@ public class UserProvider {
         }
 
     }
+
+    public List<GetWishlistRes> getWishlists(int userId) throws BaseException {
+        try{
+            List<GetWishlistRes> wishlists = userDao.getWishlists(userId);
+            return wishlists;
+        }catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
 }

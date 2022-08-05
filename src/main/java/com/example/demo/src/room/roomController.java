@@ -2,9 +2,7 @@ package com.example.demo.src.room;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.room.model.GetRoomRes;
-import com.example.demo.src.room.model.PostRoomReq;
-import com.example.demo.src.room.model.PostRoomRes;
+import com.example.demo.src.room.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.util.UriEncoder;
@@ -39,6 +37,15 @@ public class roomController {
         try {
             GetRoomRes getRoomRes = roomProvider.getRoomByRoomId(roomId);
             return new BaseResponse<>(getRoomRes);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+    @GetMapping("/rooms/{roomId}/reservation")
+    public BaseResponse<List<GetRoomReservationRes>> getRoomReservation(@PathVariable("roomId") int roomId){
+        try {
+            List<GetRoomReservationRes> getRoomReservationRes = roomProvider.getRoomReservation(roomId);
+            return new BaseResponse<>(getRoomReservationRes);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

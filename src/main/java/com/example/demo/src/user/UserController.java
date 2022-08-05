@@ -68,6 +68,17 @@ public class UserController {
         }
     }
 
+    @PostMapping("/user-profile")
+    public BaseResponse<Integer> postUserProfile(@RequestBody PostUserProfileReq postUserProfileReq){
+        try {
+            int result = userService.postUserProfile(postUserProfileReq);
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+
     @PostMapping("/sign-up")
     public BaseResponse<PostUserRes> createUser(@Validated @RequestBody PostUserReq postUserReq){
         try{
@@ -78,5 +89,41 @@ public class UserController {
         }
 
     }
+
+    @GetMapping("/{userId}/wishlists")
+    public BaseResponse<List<GetWishlistRes>> getUserWishlists(@PathVariable("userId") int userId){
+        try{
+            List<GetWishlistRes> wishlists = userProvider.getWishlists(userId);
+            return new BaseResponse<>(wishlists);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @PostMapping("/{userId}/wishlists")
+    public BaseResponse<Integer> createWishlist(@RequestBody PostWishlistReq postWishlistReq,
+                                                        @PathVariable("userId") int userId){
+        try{
+            postWishlistReq.setUserId(userId);
+            int result = userService.createWishlist(postWishlistReq);
+            return new BaseResponse<>(result);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @PatchMapping("/{userId}/wishlists")
+    public BaseResponse<Integer> modifyWishlistName(@RequestBody PatchWishlistReq patchWishlistReq,
+                                                   @PathVariable("userId") int userId){
+        try{
+            patchWishlistReq.setUserId(userId);
+            int result = userService.modifyWishlist(patchWishlistReq);
+            return new BaseResponse<>(result);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+    }
+
 
 }
