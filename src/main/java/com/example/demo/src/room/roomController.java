@@ -3,6 +3,7 @@ package com.example.demo.src.room;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.room.model.*;
+import com.example.demo.src.user.model.PatchWishlistReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.util.UriEncoder;
@@ -60,6 +61,53 @@ public class roomController {
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
+    }
+
+    @GetMapping("/rooms/{roomId}/images")
+    public BaseResponse<List<GetRoomImagesRes>> getRoomImages(@PathVariable("roomId") int roomId){
+        try {
+            List<GetRoomImagesRes> getRoomImagesRes = roomProvider.getRoomImages(roomId);
+            return new BaseResponse<>(getRoomImagesRes);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @GetMapping("/rooms/{roomId}/reviews")
+    public BaseResponse<List<GetRoomReviewRes>>getRoomReview(@PathVariable("roomId") int roomId){
+        try {
+            List<GetRoomReviewRes>getRoomReviewRes = roomProvider.getRoomReview(roomId);
+            return new BaseResponse<>(getRoomReviewRes);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @PostMapping("/rooms/{roomId}/reviews")
+    public BaseResponse<Integer> postRoomReview(@RequestBody PostRoomReviewReq postRoomReviewReq,
+                                                @PathVariable("roomId") int roomId,
+                                                @RequestParam("userId") int userId){
+        try {
+            postRoomReviewReq.setRoomId(roomId);
+            postRoomReviewReq.setGuestId(userId);
+            int result = roomService.postRoomReview(postRoomReviewReq);
+            return new BaseResponse<>(result);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @PatchMapping("/{userId}/reviews")
+    public BaseResponse<Integer> modifyRoomReview(@RequestBody PatchWishlistReq patchWishlistReq,
+                                                    @PathVariable("userId") int userId){
+        try{
+            patchWishlistReq.setUserId(userId);
+            int result = roomService.modifyRoomReview(patchWishlistReq);
+            return new BaseResponse<>(result);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+
     }
 
 

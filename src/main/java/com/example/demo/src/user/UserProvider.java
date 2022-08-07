@@ -69,4 +69,13 @@ public class UserProvider {
         }
 
     }
+
+    public List<GetUserReviewRes> getReviews(int userId) throws BaseException{
+        try{
+            List<GetUserReviewRes> reviews = userDao.getReviews(userId);
+            return reviews;
+        }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

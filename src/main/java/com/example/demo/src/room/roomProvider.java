@@ -2,8 +2,10 @@ package com.example.demo.src.room;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.src.room.model.GetRoomImagesRes;
 import com.example.demo.src.room.model.GetRoomRes;
 import com.example.demo.src.room.model.GetRoomReservationRes;
+import com.example.demo.src.room.model.GetRoomReviewRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +53,23 @@ public class roomProvider {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
 
+    }
+
+    public List<GetRoomImagesRes> getRoomImages(int roomId) throws BaseException {
+        try {
+            List<GetRoomImagesRes> roomImages = roomDao.getRoomImages(roomId);
+            return roomImages;
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public List<GetRoomReviewRes> getRoomReview(int roomId) throws  BaseException{
+        try {
+            List<GetRoomReviewRes> roomReview = roomDao.getRoomReview(roomId);
+            return roomReview;
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
     }
 }

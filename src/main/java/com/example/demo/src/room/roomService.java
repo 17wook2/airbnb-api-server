@@ -4,6 +4,8 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.room.model.PostRoomReq;
 import com.example.demo.src.room.model.PostRoomRes;
+import com.example.demo.src.room.model.PostRoomReviewReq;
+import com.example.demo.src.user.model.PatchWishlistReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,5 +23,18 @@ public class roomService {
         }catch (Exception exception){
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
+    }
+
+    public int postRoomReview(PostRoomReviewReq postRoomReviewReq) throws BaseException{
+        try {
+            int result = roomDao.postRoomReview(postRoomReviewReq);
+            return result;
+        }catch (Exception e){
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public int modifyRoomReview(PatchWishlistReq patchWishlistReq) throws BaseException{
+        return 0;
     }
 }

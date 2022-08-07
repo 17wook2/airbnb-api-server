@@ -36,14 +36,6 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-    /**
-     * 회원 조회 API
-     * [GET] /users
-     * 회원 번호 및 이메일 검색 조회 API
-     * [GET] /users? Email=
-     * @return BaseResponse<List<GetUserRes>>
-     */
-    //Query String
     @ResponseBody
     @GetMapping("") // (GET) 127.0.0.1:9000/app/users
     public BaseResponse<List<GetUserRes>> getUsers() {
@@ -51,8 +43,6 @@ public class UserController {
             // Get Users
             List<GetUserRes> getUsersRes = userProvider.getUsers();
             return new BaseResponse<>(getUsersRes);
-
-//            return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
             return new BaseResponse<>(exception.getStatus());
     }
@@ -77,8 +67,6 @@ public class UserController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
-
-
     @PostMapping("/sign-up")
     public BaseResponse<PostUserRes> createUser(@Validated @RequestBody PostUserReq postUserReq){
         try{
@@ -123,6 +111,16 @@ public class UserController {
             return new BaseResponse<>(exception.getStatus());
         }
 
+    }
+
+    @GetMapping("/{userId}/reviews")
+    public BaseResponse<List<GetUserReviewRes>> getUserReviews(@PathVariable("userId") int userId){
+        try{
+            List<GetUserReviewRes> wishlists = userProvider.getReviews(userId);
+            return new BaseResponse<>(wishlists);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
     }
 
 

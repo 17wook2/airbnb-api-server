@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,19 +16,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PostUserReq {
 
-    @NotBlank(message = "PASSWORD_IS_MANDATORY")
     private String userPassword;
-
-    @Email(message = "NOT_VALID_EMAIL")
     private String userEmail;
-
-    @NotBlank(message = "NAME_IS_MANDATORY")
     private String userName;
-
     private int userGender;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDateTime userBirthDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate userBirthDate;
 
     private String userAddress;
 
