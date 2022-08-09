@@ -31,27 +31,7 @@ public class UserProvider {
         this.jwtService = jwtService;
     }
 
-    public GetUserRes getUser(int userId) throws BaseException {
-        try {
-            GetUserRes getUserRes = userDao.getUser(userId);
-            return getUserRes;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-
-    }
-
-    public List<GetUserRes> getUsers() throws BaseException {
-        try {
-            List<GetUserRes> getUserRes = userDao.getUsers();
-            return getUserRes;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-
-    public int checkEmail(String email)throws BaseException {
+    public int checkEmail(String email) throws BaseException {
         try{
             return userDao.checkEmail(email);
         }catch (Exception exception){
@@ -60,22 +40,57 @@ public class UserProvider {
 
     }
 
-    public List<GetWishlistRes> getWishlists(int userId) throws BaseException {
+    public User getUserByEmail(String email) throws BaseException{
         try{
-            List<GetWishlistRes> wishlists = userDao.getWishlists(userId);
-            return wishlists;
+            return userDao.findByUserEmail(email);
         }catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
-
     }
 
-    public List<GetUserReviewRes> getReviews(int userId) throws BaseException{
-        try{
-            List<GetUserReviewRes> reviews = userDao.getReviews(userId);
-            return reviews;
-        }catch (Exception e){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
+//    public GetUserRes getUser(int userId) throws BaseException {
+//        try {
+//            GetUserRes getUserRes = userDao.getUser(userId);
+//            return getUserRes;
+//        } catch (Exception exception) {
+//            throw new BaseException(DATABASE_ERROR);
+//        }
+//
+//    }
+//
+//    public List<GetUserRes> getUsers() throws BaseException {
+//        try {
+//            List<GetUserRes> getUserRes = userDao.getUsers();
+//            return getUserRes;
+//        } catch (Exception exception) {
+//            throw new BaseException(DATABASE_ERROR);
+//        }
+//    }
+//
+//
+//
+//
+//    public List<GetWishlistRes> getWishlists(int userId) throws BaseException {
+//        try{
+//            List<GetWishlistRes> wishlists = userDao.getWishlists(userId);
+//            return wishlists;
+//        }catch (Exception exception){
+//            throw new BaseException(DATABASE_ERROR);
+//        }
+//
+//    }
+//
+//    public List<GetUserReviewRes> getReviews(int userId) throws BaseException{
+//        try{
+//            List<GetUserReviewRes> reviews = userDao.getReviews(userId);
+//            return reviews;
+//        }catch (Exception e){
+//            throw new BaseException(DATABASE_ERROR);
+//        }
+//    }
+//
+//    public int getUserEmail(String userEmail) {
+//        Long  = userDao.checkEmail(userEmail);
+//
+//    }
 }

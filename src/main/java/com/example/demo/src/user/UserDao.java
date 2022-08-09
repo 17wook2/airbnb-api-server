@@ -26,20 +26,18 @@ import java.util.Map;
 
 @Repository
 public class UserDao {
-
     private NamedParameterJdbcTemplate jdbc;
-    private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert wishlistJdbcInsert;
     private SimpleJdbcInsert profileJdbcInsert;
-
     private SimpleJdbcInsert userJdbcInsert;
+
+    private final RowMapper<User> userRowMapper = BeanPropertyRowMapper.newInstance(User.class);
     private final RowMapper<GetWishlistRes> getWishlistResRowMapper = BeanPropertyRowMapper.newInstance(GetWishlistRes.class);
     private final RowMapper<GetUserRes> getUserResRowMapper = BeanPropertyRowMapper.newInstance(GetUserRes.class);
     private final RowMapper<GetUserReviewRes> getUserReviewResRowMapper = BeanPropertyRowMapper.newInstance(GetUserReviewRes.class);
     @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbc = new NamedParameterJdbcTemplate(dataSource);
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.wishlistJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("wishlists")
                 .usingGeneratedKeyColumns("wishlistId");
@@ -51,56 +49,81 @@ public class UserDao {
                 .usingGeneratedKeyColumns("userId");
     }
 
-    public List<GetUserRes> getUsers() {
-        String getUsersQuery = "select * from user inner join user_profile on user.userId = user_profile.userId";
-        return jdbc.query(getUsersQuery,getUserResRowMapper);
-    }
-
-    public GetUserRes getUser(int userId) {
-        String getUserQuery = "select * from user inner join user_profile on user.userId = user_profile.userId where user.userId = :userId";
-        MapSqlParameterSource namedParameter = new MapSqlParameterSource("userId", userId);
-        return jdbc.queryForObject(getUserQuery,namedParameter,getUserResRowMapper);
-    }
-
     public int checkEmail(String email) {
-        String checkEmailQuery = "select exists(select userEmail from user_profile where userEmail = ?)";
-        String checkEmailParams = email;
-        return this.jdbcTemplate.queryForObject(checkEmailQuery, int.class, checkEmailParams);
+        String checkEmailQuery = "select exists(select userEmail from user where userEmail = :email)";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("email", email);
+        return jdbc.queryForObject(checkEmailQuery,namedParameters,Integer.class);
+    }
+    public User findByUserEmail(String userEmail) {
+        String findByUserEmail = "select * from user where userEmail = :userEmail";
+        Map<String, String> params = new HashMap<>();
+        params.put("userEmail", userEmail);
+        User user = jdbc.queryForObject(findByUserEmail, params, userRowMapper);
+        return user;
+    }
+    public User registerUser(User userEntity) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(userEntity);
+        long userId = userJdbcInsert.executeAndReturnKey(params).longValue();
+        String getUserQuery = "select * from user where userId = :userId";
+        Map<String, Long> userIdParams = new HashMap<>();
+        userIdParams.put("userId", userId);
+        return jdbc.queryForObject(getUserQuery,userIdParams,userRowMapper);
     }
 
-    public int createUser(PostUserReq postUserReq) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(postUserReq);
-        int userIdx = userJdbcInsert.executeAndReturnKey(params).intValue();
-        return userIdx;
+    public int updateRefreshToken(Long userId, String refreshToken) {
+        String updateRefreshTokenQuery = "update user set refresh_token = :refreshToken where userId = :userId";
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("refreshToken", refreshToken);
+        params.addValue("userId",userId);
+        return jdbc.update(updateRefreshTokenQuery,params);
     }
 
 
-    public List<GetWishlistRes> getWishlists(int userId) {
-        String getWishlistsQuery = "select * from wishlists where userId = ?";
-        return jdbcTemplate.query(getWishlistsQuery,getWishlistResRowMapper,userId);
-    }
 
-    public int createWishlist(PostWishlistReq postWishlistReq) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(postWishlistReq);
-        return wishlistJdbcInsert.executeAndReturnKey(params).intValue();
-    }
+//    public List<GetUserRes> getUsers() {
+//        String getUsersQuery = "select * from user inner join user_profile on user.userId = user_profile.userId";
+//        return jdbc.query(getUsersQuery,getUserResRowMapper);
+//    }
+//
+//    public GetUserRes getUser(int userId) {
+//        String getUserQuery = "select * from user inner join user_profile on user.userId = user_profile.userId where user.userId = :userId";
+//        MapSqlParameterSource namedParameter = new MapSqlParameterSource("userId", userId);
+//        return jdbc.queryForObject(getUserQuery,namedParameter,getUserResRowMapper);
+//    }
+//
+//
+//
+//
+//
+//
+//    public List<GetWishlistRes> getWishlists(int userId) {
+//        String getWishlistsQuery = "select * from wishlists where userId = ?";
+//        return jdbcTemplate.query(getWishlistsQuery,getWishlistResRowMapper,userId);
+//    }
+//
+//    public int createWishlist(PostWishlistReq postWishlistReq) {
+//        SqlParameterSource params = new BeanPropertySqlParameterSource(postWishlistReq);
+//        return wishlistJdbcInsert.executeAndReturnKey(params).intValue();
+//    }
+//
+//    public int modifyWishlist(PatchWishlistReq patchWishlistReq) {
+//        String modifyWishlistQuery = "update wishlists set wishlistName = :wishlistName where wishlistId = :wishlistId";
+//        SqlParameterSource params = new BeanPropertySqlParameterSource(patchWishlistReq);
+//        return jdbc.update(modifyWishlistQuery,params);
+//    }
+//
+//    public int postUserProfile(PostUserProfileReq postUserProfileReq) {
+//        //bean에 등록된 객체를 map객체로 만들어준다.
+//        SqlParameterSource params = new BeanPropertySqlParameterSource(postUserProfileReq);
+//        return profileJdbcInsert.executeAndReturnKey(params).intValue();
+//    }
+//
+//    public List<GetUserReviewRes> getReviews(int userId) {
+//        String getReviewsQuery = "select * from review where guestId = :userId";
+//        HashMap<String, Integer> params = new HashMap<>();
+//        params.put("userId",userId);
+//        return jdbc.query(getReviewsQuery,params,getUserReviewResRowMapper);
+//    }
 
-    public int modifyWishlist(PatchWishlistReq patchWishlistReq) {
-        String modifyWishlistQuery = "update wishlists set wishlistName = :wishlistName where wishlistId = :wishlistId";
-        SqlParameterSource params = new BeanPropertySqlParameterSource(patchWishlistReq);
-        return jdbc.update(modifyWishlistQuery,params);
-    }
 
-    public int postUserProfile(PostUserProfileReq postUserProfileReq) {
-        //bean에 등록된 객체를 map객체로 만들어준다.
-        SqlParameterSource params = new BeanPropertySqlParameterSource(postUserProfileReq);
-        return profileJdbcInsert.executeAndReturnKey(params).intValue();
-    }
-
-    public List<GetUserReviewRes> getReviews(int userId) {
-        String getReviewsQuery = "select * from review where guestId = :userId";
-        HashMap<String, Integer> params = new HashMap<>();
-        params.put("userId",userId);
-        return jdbc.query(getReviewsQuery,params,getUserReviewResRowMapper);
-    }
 }
