@@ -1,7 +1,6 @@
 package com.example.demo.src.room;
 
 import com.example.demo.src.room.model.*;
-import com.sun.rowset.internal.Row;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;

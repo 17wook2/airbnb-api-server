@@ -7,8 +7,8 @@ plugins {
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.9
+targetCompatibility = 1.9
 
 compileJava.options.encoding = 'UTF-8'
 
@@ -51,6 +51,7 @@ dependencies {
     // Security, Authentication
     implementation('org.springframework.boot:spring-boot-starter-security')
     compile(group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0')
+    compile(group: 'org.apache.httpcomponents', name:'httpclient', version: '4.5')
     compile('io.jsonwebtoken:jjwt:0.9.0')
 
     implementation('org.springframework.boot:spring-boot-starter')
@@ -62,11 +63,21 @@ dependencies {
 
     // validator
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.5.6'
-
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
 
+    //log
     compile 'org.springframework.boot:spring-boot-starter-log4j2'
     compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.10.3'
+
+
+    //oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    //thymleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    //gson
+    implementation 'com.google.code.gson:gson:2.9.0'
 }
 
 test {
