@@ -8,5 +8,23 @@
       <jdbc-url>jdbc:mysql://wook2-rds.c7vimhuuowv7.ap-northeast-2.rds.amazonaws.com:3306</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="demo.main/Hibernate" uuid="e6c11ce1-39e3-4c7d-bcd0-d99684672b28">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>Hibernate</remarks>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://wook2-rds.c7vimhuuowv7.ap-northeast-2.rds.amazonaws.com/Airbnb?autoReconnect=true</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="demo.test/Hibernate" uuid="cc2b9832-a0fd-4bd4-8f49-66b70a250822">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>Hibernate</remarks>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://wook2-rds.c7vimhuuowv7.ap-northeast-2.rds.amazonaws.com/Airbnb?autoReconnect=true</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

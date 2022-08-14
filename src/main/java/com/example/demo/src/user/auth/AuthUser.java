@@ -1,24 +1,21 @@
 package com.example.demo.src.user.auth;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
-@Getter
-public class MemberDetail implements UserDetails {
+@Data
+public class AuthUser implements UserDetails {
 
     private String username;
     private String password;
     private List<GrantedAuthority> authorities;
 
     @Builder
-    public MemberDetail(String username, String password, List<GrantedAuthority> authorities) {
+    public AuthUser(String username, String password, List<GrantedAuthority> authorities) {
         this.username = username;
         this.password = password;
         this.authorities = authorities;

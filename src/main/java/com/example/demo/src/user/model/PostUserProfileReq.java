@@ -11,16 +11,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostUserProfileReq {
-    private int userProfileId;
-    private int userId;
-    private String userEmail;
+    private Long userId;
     private String userName;
     private int userGender;
     private LocalDate userBirthDate;
     private String userAddress;
     private String userProfileImageUrl;
     private String userPhoneNumber;
-    private int host;
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
 }

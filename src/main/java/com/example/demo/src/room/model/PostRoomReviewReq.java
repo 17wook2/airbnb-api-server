@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostRoomReviewReq {
-    private int guestId;
-    private int roomId;
+    private Long guestId;
+    private Long roomId;
     private String comment;
     private int cleanliness;
     private int accuracy;
@@ -18,5 +18,4 @@ public class PostRoomReviewReq {
     private int location;
     private int checkIn;
     private int satisfaction;
-    private int status;
 }

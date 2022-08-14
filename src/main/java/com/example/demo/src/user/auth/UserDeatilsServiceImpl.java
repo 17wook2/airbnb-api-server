@@ -1,6 +1,6 @@
 package com.example.demo.src.user.auth;
 
-import com.example.demo.src.user.User;
+import com.example.demo.src.user.domain.User;
 import com.example.demo.src.user.UserDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,7 +27,7 @@ public class UserDeatilsServiceImpl implements UserDetailsService {
         }
         List<GrantedAuthority> roles = new ArrayList<>();
         roles.add(new SimpleGrantedAuthority(user.getRole()));
-        return MemberDetail.builder()
+        return AuthUser.builder()
                 .username(user.getUserEmail())
                 .password(user.getUserPassword())
                 .authorities(roles)
