@@ -2,31 +2,31 @@ package com.example.demo.src.room;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.reservation.model.GetReservationRes;
+import com.example.demo.src.room.domain.Room;
 import com.example.demo.src.room.model.*;
+import com.example.demo.src.user.auth.Auth;
 import com.example.demo.src.user.model.PatchWishlistReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.util.UriEncoder;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/app")
 public class roomController {
 
     private final roomService roomService;
     private final roomProvider roomProvider;
 
     @GetMapping("/rooms")
-
-    public BaseResponse<List<GetRoomRes>> getRooms(@RequestParam(value = "roomType", required = false) String roomType){
+    public BaseResponse<List<Room>> getRooms(@RequestParam(value = "roomType", required = false) String roomType){
         try {
             if (roomType==null) {
-                List<GetRoomRes> getRoomRes = roomProvider.getRooms();
+                List<Room> getRoomRes = roomProvider.getRooms();
                 return new BaseResponse<>(getRoomRes);
             }
-                List<GetRoomRes> getRoomResByType = roomProvider.getRoomsByType(roomType);
+                List<Room> getRoomResByType = roomProvider.getRoomsByType(roomType);
                 return new BaseResponse<>(getRoomResByType);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -34,18 +34,18 @@ public class roomController {
     }
 
     @GetMapping("/rooms/{roomId}")
-    public BaseResponse<GetRoomRes> getRoomByRoomId(@PathVariable("roomId") int roomId){
+    public BaseResponse<Room> getRoomByRoomId(@PathVariable("roomId") int roomId){
         try {
-            GetRoomRes getRoomRes = roomProvider.getRoomByRoomId(roomId);
+            Room getRoomRes = roomProvider.getRoomByRoomId(roomId);
             return new BaseResponse<>(getRoomRes);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
     }
     @GetMapping("/rooms/{roomId}/reservation")
-    public BaseResponse<List<GetRoomReservationRes>> getRoomReservation(@PathVariable("roomId") int roomId){
+    public BaseResponse<List<GetReservationRes>> getRoomReservation(@PathVariable("roomId") int roomId){
         try {
-            List<GetRoomReservationRes> getRoomReservationRes = roomProvider.getRoomReservation(roomId);
+            List<GetReservationRes> getRoomReservationRes = roomProvider.getRoomReservation(roomId);
             return new BaseResponse<>(getRoomReservationRes);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
@@ -53,10 +53,9 @@ public class roomController {
     }
 
     @PostMapping("/rooms")
-    public BaseResponse<PostRoomRes> createRoom(@RequestBody PostRoomReq postRoomReq, @RequestParam("userId") int userId){
+    public BaseResponse<PostRoomRes> createRoom(@Auth String username, @RequestBody PostRoomReq postRoomReq){
         try {
-            postRoomReq.setUserId(userId);
-            PostRoomRes postRoomRes = roomService.createRoom(postRoomReq);
+            PostRoomRes postRoomRes = roomService.createRoom(postRoomReq,username);
             return new BaseResponse<>(postRoomRes);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
@@ -84,13 +83,13 @@ public class roomController {
     }
 
     @PostMapping("/rooms/{roomId}/reviews")
-    public BaseResponse<Integer> postRoomReview(@RequestBody PostRoomReviewReq postRoomReviewReq,
-                                                @PathVariable("roomId") int roomId,
-                                                @RequestParam("userId") int userId){
+    public BaseResponse<Long> postRoomReview(@Auth String username,
+                                                @RequestBody PostRoomReviewReq postRoomReviewReq,
+                                                @PathVariable("roomId") Long roomId
+                                                ){
         try {
             postRoomReviewReq.setRoomId(roomId);
-            postRoomReviewReq.setGuestId(userId);
-            int result = roomService.postRoomReview(postRoomReviewReq);
+            Long result = roomService.postRoomReview(postRoomReviewReq,username);
             return new BaseResponse<>(result);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
@@ -101,7 +100,7 @@ public class roomController {
     public BaseResponse<Integer> modifyRoomReview(@RequestBody PatchWishlistReq patchWishlistReq,
                                                     @PathVariable("userId") int userId){
         try{
-            patchWishlistReq.setUserId(userId);
+//            patchWishlistReq.setUserId(userId);
             int result = roomService.modifyRoomReview(patchWishlistReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){

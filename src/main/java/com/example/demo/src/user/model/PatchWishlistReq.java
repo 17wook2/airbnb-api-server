@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatchWishlistReq {
-    private int wishlistId;
-    private int userId;
+    private Long wishlistId;
+    private Long userId;
     private String wishlistName;
     private LocalDateTime updatedAt = LocalDateTime.now();
 }

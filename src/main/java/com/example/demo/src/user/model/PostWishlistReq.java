@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostWishlistReq {
-    private int wishlistId;
-    private int userId;
+    private Long wishlistId;
+    private Long userId;
     private String wishlistName;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();

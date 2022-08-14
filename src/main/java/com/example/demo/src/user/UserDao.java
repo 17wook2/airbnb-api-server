@@ -1,25 +1,20 @@
 package com.example.demo.src.user;
 
 
-import com.example.demo.src.room.model.GetRoomRes;
-import com.example.demo.src.room.model.PostRoomRes;
+import com.example.demo.src.user.domain.User;
+import com.example.demo.src.user.domain.UserProfile;
 import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +23,11 @@ import java.util.Map;
 public class UserDao {
     private NamedParameterJdbcTemplate jdbc;
     private SimpleJdbcInsert wishlistJdbcInsert;
-    private SimpleJdbcInsert profileJdbcInsert;
+    private SimpleJdbcInsert userProfileJdbcInsert;
     private SimpleJdbcInsert userJdbcInsert;
 
     private final RowMapper<User> userRowMapper = BeanPropertyRowMapper.newInstance(User.class);
+    private final RowMapper<UserProfile> userProfileRowMapper = BeanPropertyRowMapper.newInstance(UserProfile.class);
     private final RowMapper<GetWishlistRes> getWishlistResRowMapper = BeanPropertyRowMapper.newInstance(GetWishlistRes.class);
     private final RowMapper<GetUserRes> getUserResRowMapper = BeanPropertyRowMapper.newInstance(GetUserRes.class);
     private final RowMapper<GetUserReviewRes> getUserReviewResRowMapper = BeanPropertyRowMapper.newInstance(GetUserReviewRes.class);
@@ -41,12 +37,13 @@ public class UserDao {
         this.wishlistJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("wishlists")
                 .usingGeneratedKeyColumns("wishlistId");
-        this.profileJdbcInsert = new SimpleJdbcInsert(dataSource)
+        this.userProfileJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("user_profile")
                 .usingGeneratedKeyColumns("userProfileId");
         this.userJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("user")
                 .usingGeneratedKeyColumns("userId");
+
     }
 
     public int checkEmail(String email) {
@@ -77,7 +74,38 @@ public class UserDao {
         params.addValue("userId",userId);
         return jdbc.update(updateRefreshTokenQuery,params);
     }
+    public Long insertUserProfile(UserProfile userProfile) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(userProfile);
+        long userProfileId = userProfileJdbcInsert.executeAndReturnKey(params).longValue();
+        return userProfileId;
+    }
 
+    public UserProfile getUserProfileByUserEmail(Long userId) {
+        String getUserProfileByUserEmailQuery = "select * from user_profile where userId = :userId";
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("userId",userId);
+        return jdbc.queryForObject(getUserProfileByUserEmailQuery,params,userProfileRowMapper);
+    }
+
+    public List<GetWishlistRes> getWishlists(Long userId) {
+        String getWishlistsQuery = "select * from wishlists where userId = :userId";
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("userId", userId);
+        return jdbc.query(getWishlistsQuery,params,getWishlistResRowMapper);
+    }
+
+    public long createWishlist(PostWishlistReq postWishlistReq) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(postWishlistReq);
+        long wishlistId = wishlistJdbcInsert.executeAndReturnKey(params).longValue();
+        return wishlistId;
+    }
+
+    public int modifyWishlist(PatchWishlistReq patchWishlistReq) {
+        String modifyWishlistQuery = "update wishlists set wishlistName = :wishlistName";
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("wishlistName", patchWishlistReq.getWishlistName());
+        return jdbc.update(modifyWishlistQuery,params);
+    }
 
 
 //    public List<GetUserRes> getUsers() {

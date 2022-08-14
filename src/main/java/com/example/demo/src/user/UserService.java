@@ -6,25 +6,15 @@ import com.example.demo.config.BaseException;
 import com.example.demo.src.user.auth.AccessToken;
 import com.example.demo.src.user.auth.ProfileDto;
 import com.example.demo.src.user.auth.ProviderService;
-import com.example.demo.src.user.auth.TokenDto;
+import com.example.demo.src.user.domain.User;
+import com.example.demo.src.user.domain.UserProfile;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
-import com.example.demo.utils.SHA256;
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
@@ -94,9 +84,54 @@ public class UserService {
 
     }
 
+    public Long findByUserEmail(String userEmail){
+        User user = userDao.findByUserEmail(userEmail);
+        return user.getUserId();
+    }
 
+    @Transactional
+    public PostUserProfileRes InsertUserProfile(PostUserProfileReq postUserProfileReq, String username) throws BaseException {
+        try{
+            Long userId = findByUserEmail(username);
+            postUserProfileReq.setUserId(userId);
+            UserProfile userProfile = modelMapper.map(postUserProfileReq, UserProfile.class);
+            Long userProfileId = userDao.insertUserProfile(userProfile);
+            return new PostUserProfileRes(userProfileId,userId);
+        }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
 
+    }
 
+    public UserProfile GetUserProfile(String userEmail) throws BaseException{
+        try{
+            Long userId = findByUserEmail(userEmail);
+            return userDao.getUserProfileByUserEmail(userId);
+        }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
 
+    }
+
+    public Long createWishlist(PostWishlistReq postWishlistReq, String userEmail) throws BaseException{
+        try{
+            Long userId = findByUserEmail(userEmail);
+            postWishlistReq.setUserId(userId);
+            return userDao.createWishlist(postWishlistReq);
+        }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
+
+    public int modifyWishlist(PatchWishlistReq patchWishlistReq, String userEmail) throws BaseException{
+        try{
+            Long userId = findByUserEmail(userEmail);
+            patchWishlistReq.setUserId(userId);
+            return userDao.modifyWishlist(patchWishlistReq);
+        }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
 

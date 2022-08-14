@@ -2,9 +2,9 @@ package com.example.demo.src.room;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.src.room.domain.Room;
 import com.example.demo.src.room.model.GetRoomImagesRes;
-import com.example.demo.src.room.model.GetRoomRes;
-import com.example.demo.src.room.model.GetRoomReservationRes;
+import com.example.demo.src.reservation.model.GetReservationRes;
 import com.example.demo.src.room.model.GetRoomReviewRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +16,9 @@ import java.util.List;
 public class roomProvider {
 
     private final roomDao roomDao;
-    public List<GetRoomRes> getRooms() throws BaseException{
+    public List<Room> getRooms() throws BaseException{
         try {
-            List<GetRoomRes> rooms = roomDao.getRooms();
+            List<Room> rooms = roomDao.getRooms();
             return rooms;
         }catch (Exception exception){
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
@@ -26,9 +26,9 @@ public class roomProvider {
 
     }
 
-    public GetRoomRes getRoomByRoomId(int roomId) throws BaseException{
+    public Room getRoomByRoomId(int roomId) throws BaseException{
         try {
-            GetRoomRes getRoomRes = roomDao.getRoomById(roomId);
+            Room getRoomRes = roomDao.getRoomById(roomId);
             return getRoomRes;
         }catch (Exception exception){
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
@@ -36,18 +36,18 @@ public class roomProvider {
 
     }
 
-    public List<GetRoomRes> getRoomsByType(String roomType) throws BaseException{
+    public List<Room> getRoomsByType(String roomType) throws BaseException{
         try{
-            List<GetRoomRes> getRoomRes = roomDao.getRoomsByType(roomType);
-            return getRoomRes;
+            List<Room> getRoomsByTypeRes = roomDao.getRoomsByType(roomType);
+            return getRoomsByTypeRes;
         }catch (Exception exception){
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
 
-    public List<GetRoomReservationRes> getRoomReservation(int roomId) throws BaseException {
+    public List<GetReservationRes> getRoomReservation(int roomId) throws BaseException {
         try{
-            List<GetRoomReservationRes> roomReservation = roomDao.getRoomReservation(roomId);
+            List<GetReservationRes> roomReservation = roomDao.getRoomReservation(roomId);
             return roomReservation;
         }catch (Exception exception){
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);

@@ -1,4 +1,4 @@
-package com.example.demo.src.room.model;
+package com.example.demo.src.reservation.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetRoomReservationRes {
+public class GetReservationRes {
     private int reservationId;
     private int guestId;
     private int roomId;

@@ -1,8 +1,9 @@
 package com.example.demo.src.room;
 
+import com.example.demo.src.reservation.model.GetReservationRes;
+import com.example.demo.src.room.domain.Review;
+import com.example.demo.src.room.domain.Room;
 import com.example.demo.src.room.model.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -35,35 +35,34 @@ public class roomDao {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("room").usingGeneratedKeyColumns("roomId");
         this.reviewJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("review").usingGeneratedKeyColumns("reviewId");
     }
-    private final RowMapper<GetRoomRes> getRoomRowMapper = BeanPropertyRowMapper.newInstance(GetRoomRes.class);
-    private final RowMapper<GetRoomReservationRes> getRoomReservationResRowMapper = BeanPropertyRowMapper.newInstance(GetRoomReservationRes.class);
-
+    private final RowMapper<Room> RoomRowMapper = BeanPropertyRowMapper.newInstance(Room.class);
+    private final RowMapper<GetReservationRes> getRoomReservationResRowMapper = BeanPropertyRowMapper.newInstance(GetReservationRes.class);
     private final RowMapper<GetRoomImagesRes> getRoomImagesResRowMapper = BeanPropertyRowMapper.newInstance(GetRoomImagesRes.class);
     private final RowMapper<GetRoomReviewRes> getRoomReviewResRowMapper = BeanPropertyRowMapper.newInstance(GetRoomReviewRes.class);
 
-    public List<GetRoomRes> getRooms() {
+    public List<Room> getRooms() {
         String getRoomsQuery = "select * from room";
-        return this.jdbcTemplate.query(getRoomsQuery, getRoomRowMapper);
+        return this.jdbcTemplate.query(getRoomsQuery, RoomRowMapper);
     }
 
-    public GetRoomRes getRoomById(int roomId){
+    public Room getRoomById(int roomId){
         String getRoomByIdQuery = "select * from room where roomId = ?";
-        return this.jdbcTemplate.queryForObject(getRoomByIdQuery,getRoomRowMapper,roomId);
+        return this.jdbcTemplate.queryForObject(getRoomByIdQuery,RoomRowMapper,roomId);
     }
 
 
-    public List<GetRoomRes> getRoomsByType(String roomType) {
+    public List<Room> getRoomsByType(String roomType) {
         String getRoomByArchitectType = "select r.* from architectType join room_architectType raT on architectType.architectTypeId = raT.architectTypeId join room r on raT.roomId = r.roomId where architectTypeDescription = ?";
-        return this.jdbcTemplate.query(getRoomByArchitectType, getRoomRowMapper, roomType);
+        return this.jdbcTemplate.query(getRoomByArchitectType, RoomRowMapper, roomType);
     }
 
-    public PostRoomRes createRoom(PostRoomReq postRoomReq) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(postRoomReq);
+    public PostRoomRes createRoom(Room room) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(room);
         long roomId = jdbcInsert.executeAndReturnKey(params).longValue();
         return new PostRoomRes(roomId);
     }
 
-    public List<GetRoomReservationRes> getRoomReservation(int roomId) {
+    public List<GetReservationRes> getRoomReservation(int roomId) {
         String getRoomReservationQuery = "select * from reservation where roomId = ?";
         return this.jdbcTemplate.query(getRoomReservationQuery,getRoomReservationResRowMapper,roomId);
     }
@@ -84,9 +83,9 @@ public class roomDao {
 
     }
 
-    public int postRoomReview(PostRoomReviewReq postRoomReviewReq) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(postRoomReviewReq);
-        int reviewId = jdbcInsert.executeAndReturnKey(params).intValue();
+    public Long postRoomReview(Review review) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(review);
+        Long reviewId = reviewJdbcInsert.executeAndReturnKey(params).longValue();
         return reviewId;
 
     }
