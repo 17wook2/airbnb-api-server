@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="SshConfigs">
-    <configs>
-      <sshConfig host="43.200.171.1" id="d87d2f09-e774-48f6-aaee-bacada6a94a4" keyPath="C:\Users\alsdn\OneDrive\바탕 화면\학교\소프트 스퀘어드\wook2_ec2_key.pem" port="22" nameFormat="DESCRIPTIVE" username="ubuntu" useOpenSSHConfig="true" />
-    </configs>
-  </component>
-</project>
