@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import com.example.demo.src.user.secret.Secret;
 import lombok.RequiredArgsConstructor;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;

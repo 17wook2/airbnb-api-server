@@ -2,8 +2,7 @@ package com.example.demo.oAuth;
 
 import com.example.demo.Domain.User;
 import com.example.demo.Repository.UserRepository;
-import com.example.demo.src.user.UserDao;
-import com.example.demo.src.user.auth.AuthUser;
+import com.example.demo.oAuth.model.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,7 +17,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UserDao userDao;
     private final UserRepository userRepository;
 
     @Override

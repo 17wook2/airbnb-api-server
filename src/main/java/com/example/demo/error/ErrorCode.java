@@ -15,7 +15,8 @@ public enum ErrorCode {
     // User
     EMAIL_DUPLICATION(400, "U001", "Email is Duplication"),
     LOGIN_INPUT_INVALID(400, "U002", "Login input is invalid"),
-
+    USER_NOT_FOUND(400,"U003", "User Not Found"),
+    PASSWORD_NOT_MATCH(400,"U004", "Password Not Match")
     ;
 
     private final int status;

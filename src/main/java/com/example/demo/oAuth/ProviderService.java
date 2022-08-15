@@ -1,8 +1,9 @@
 package com.example.demo.oAuth;
 
-import com.example.demo.src.user.auth.AccessToken;
-import com.example.demo.src.user.auth.KakaoProfileDto;
-import com.example.demo.src.user.auth.ProfileDto;
+import com.example.demo.oAuth.model.AccessToken;
+import com.example.demo.oAuth.model.KakaoProfileDto;
+import com.example.demo.oAuth.model.ProfileDto;
+import com.example.demo.utils.JwtService;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -18,6 +19,7 @@ public class ProviderService {
 
     private final Gson gson;
     private final RestTemplate restTemplate;
+    private final JwtService jwtService;
 
     @Transactional
     public AccessToken getAccessToken(String code, String provider) {
@@ -65,6 +67,5 @@ public class ProviderService {
                 String.class
         );
     }
-
 
 }
