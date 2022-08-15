@@ -1,9 +1,8 @@
 package com.example.demo.utils;
 
 
-import com.example.demo.src.user.auth.TokenDto;
-import com.example.demo.src.user.auth.UserDeatilsServiceImpl;
-import com.example.demo.src.user.secret.Secret;
+import com.example.demo.config.Secret;
+import com.example.demo.oAuth.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,7 +17,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtService {
 
-    private final UserDeatilsServiceImpl userDeatilsServiceImpl;
+    private final UserDetailsServiceImpl userDeatilsServiceImpl;
 
     private long tokenValidTime = 1000L * 60 * 30; // 30분
     private long refreshTokenValidTime = 1000L * 60 * 60 * 24 * 7;

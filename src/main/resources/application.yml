@@ -46,7 +46,7 @@ logging:
   config:
   classpath: log4j2.xml
 mybatis:
-  type-aliases-package: com.example.demo.Repository
+  type-aliases-package: com.example.demo.Domain, com.example.demo.dto
   mapper-locations: mybatis/mapper/**/*.xml
   configuration:
     jdbc-type-for-null: 'NULL'
